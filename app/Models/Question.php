@@ -9,6 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Builder
+ * @property string $name
+ * @property string $question_type_id
+ * @property QuestionType $questionType
+ * @property string $category_id
+ * @property Category $category
  */
 class Question extends Model
 {

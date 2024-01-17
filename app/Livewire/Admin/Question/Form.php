@@ -44,7 +44,9 @@ class Form extends Component
     public function save(): mixed
     {
         $model = $this->question;
-        $model->name = $this->name;
+        $this->name = $this->question->name;
+        $this->questionTypeId = $this->question->question_type_id;
+        $this->questionCategoryId = $this->question->category_id;
         $model->save();
         return redirect(route('question.index'))->with('status', "Berhasil");
     }
