@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @author Adi Novanto <adinovanto07@gmail.com>
  * @mixin \Illuminate\Database\Eloquent\Builder
+ * @property string category_name
  */
 class Category extends Model
 {

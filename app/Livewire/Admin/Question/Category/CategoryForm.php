@@ -27,14 +27,16 @@ class CategoryForm extends Component
 
     public function mount(mixed $categoryId = null): void
     {
+        $this->category = new Category();
         if (!is_null($categoryId)) {
-            $this->category = new Category();
+            $this->category = $this->categoryRepository->getCategory($categoryId);
             $this->category_name = $this->category->category_name;
         }
     }
 
     public function save(): mixed
     {
+        $this->category = new Category();
         $model = $this->category;
         $model->category_name = $this->category_name;
         $model->save();

@@ -24,7 +24,7 @@
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ $category->category_name }}</td>
                                     <td class="align-middle">
-                                        <a href="{{ route('question.form', ['questionId' => $category->id]) }}"
+                                        <a href="{{ route('category.form', ['categoryId' => $category->id]) }}"
                                            class="btn btn-secondary">Edit</a>
                                         <button wire:click="delete({{ $category->id }})"
                                                 class="btn btn-danger">Delete
