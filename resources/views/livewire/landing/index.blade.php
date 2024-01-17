@@ -103,7 +103,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="radio[{{ $key }}]"
                                                value="{{ $answer->id }}"
-                                               wire:model="answers.{{ $key }}.answer_id">
+                                               wire:model="answers.{{ $key }}.answer_id" required>
                                         <label class="form-check-label">
                                             {{ $answer->answer }}
                                         </label>
@@ -115,14 +115,14 @@
                                         @if($answerKey <= 1)
                                             <input class="form-check-input" type="radio" name="radio[{{ $key }}]"
                                                    value="{{ $answer->id }}"
-                                                   wire:model="answers.{{ $key }}.answer_id">
+                                                   wire:model="answers.{{ $key }}.answer_id" required>
                                             <label class="form-check-label">
                                                 {{ $answer->answer }}
                                             </label>
                                         @else
                                             <input class="form-check-input" type="radio" name="radio[{{ $key }}]"
                                                    value="{{ $answer->id }}"
-                                                   wire:model="answers.{{ $key }}.answer_id">
+                                                   wire:model="answers.{{ $key }}.answer_id" required>
                                             <input class="form-control" type="text" placeholder="Lainnya"
                                                    wire:model="answers.{{ $key }}.custom_answer">
                                         @endif
