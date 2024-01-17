@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -18,7 +17,11 @@ class DatabaseSeeder extends Seeder
             EducationSeeder::class,
             JobSeeder::class,
             ServiceTypeSeeder::class,
+            CategorySeeder::class,
+            PatientRoomSeeder::class,
+            QuestionTypeSeeder::class,
             QuestionSeeder::class,
+            QuestionAnswerSeeder::class
         ]);
 
         User::create(['username' => 'admin', 'password' => bcrypt('admin')]);
