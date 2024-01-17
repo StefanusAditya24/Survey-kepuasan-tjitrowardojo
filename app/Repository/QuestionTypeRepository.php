@@ -17,9 +17,9 @@ class QuestionTypeRepository
     ) {
     }
 
-    public function getQuestionType(mixed $patientRoomsId): ?QuestionType
+    public function getQuestionType(mixed $questionTypeId): ?QuestionType
     {
-        return $this->questionType->findOrFail($patientRoomsId);
+        return $this->questionType->findOrFail($questionTypeId);
     }
 
     public function getQuestionTypes(): Collection

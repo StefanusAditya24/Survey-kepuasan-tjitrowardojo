@@ -24,7 +24,7 @@
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ $type->type }}</td>
                                     <td class="align-middle">
-                                        <a href="{{ route('type.form', ['questionId' => $type->id]) }}"
+                                        <a href="{{ route('type.form', ['typeId' => $type->id]) }}"
                                            class="btn btn-secondary">Edit</a>
                                         <button wire:click="delete({{ $type->id }})"
                                                 class="btn btn-danger">Delete

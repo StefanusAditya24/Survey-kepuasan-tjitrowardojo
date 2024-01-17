@@ -25,16 +25,18 @@ class TypeForm extends Component
     ) {
     }
 
-    public function mount(mixed $questionTypeId = null): void
+    public function mount(mixed $typeId = null): void
     {
-        if (!is_null($questionTypeId)) {
-            $this->questionType = new QuestionType();
+        $this->questionType = new QuestionType();
+        if (!is_null($typeId)) {
+            $this->questionType = $this->questionTypeRepository->getQuestionType($typeId);
             $this->type = $this->questionType->type;
         }
     }
 
     public function save(): mixed
     {
+        $this->questionType = new QuestionType();
         $model = $this->questionType;
         $model->type = $this->type;
         $model->save();
