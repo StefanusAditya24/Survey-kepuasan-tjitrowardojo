@@ -10,6 +10,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Builder
+ * @property string $name
+ * @property string $phone_number
+ * @property string $gender
+ * @property Age $age
+ * @property Education $education
+ * @property Job $job
+ * @property ServiceType $serviceType
+ * @property PatientRoom $patientRoom
+ * @property RespondentAnswer $answers
  */
 class Respondent extends Model
 {
@@ -21,6 +30,7 @@ class Respondent extends Model
         'education_id',
         'job',
         'service_type_id',
+        'patient_room_id'
     ];
 
     public function gender(): Attribute
@@ -51,5 +61,10 @@ class Respondent extends Model
     public function serviceType(): BelongsTo
     {
         return $this->belongsTo(ServiceType::class);
+    }
+
+    public function patientRoom(): BelongsTo
+    {
+        return $this->belongsTo(PatientRoom::class);
     }
 }
