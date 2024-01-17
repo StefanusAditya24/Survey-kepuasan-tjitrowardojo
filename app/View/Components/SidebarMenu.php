@@ -9,7 +9,7 @@ use Illuminate\View\Component;
 
 class SidebarMenu extends Component
 {
-    public $items;
+    public array $items;
     public function __construct()
     {
         $this->items = [
@@ -19,6 +19,8 @@ class SidebarMenu extends Component
             ],
             'Master' => [
                 new Item('Pertanyaan', 'question.index', 'fas fa-question'),
+                new Item('Jenis Pertanyaan', 'type.index', 'fas fa-list'),
+                new Item('Kategori', 'category.index', 'fas fa-layer-group'),
                 new Item('Umur', 'age.index', 'fas fa-user'),
                 new Item('Pendidikan', 'education.index', 'fas fa-graduation-cap'),
                 new Item('Pekerjaan', 'job.index', 'fas fa-briefcase'),

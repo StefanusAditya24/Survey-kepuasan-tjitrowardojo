@@ -5,6 +5,7 @@ namespace App\Livewire\Landing;
 use App\Repository\AgeRepository;
 use App\Repository\EducationRepository;
 use App\Repository\JobRepository;
+use App\Repository\PatientRoomRepository;
 use App\Repository\QuestionRepository;
 use App\Repository\RespondentAnswerRepository;
 use App\Repository\RespondentRepository;
@@ -18,11 +19,12 @@ use Livewire\Component;
 
 class Index extends Component
 {
-    public Collection $ageDatas;
-    public Collection $educationDatas;
-    public Collection $jobDatas;
-    public Collection $serviceTypeDatas;
-    public Collection $questionDatas;
+    public Collection $ages;
+    public Collection $educations;
+    public Collection $jobs;
+    public Collection $serviceTypes;
+    public Collection $questions;
+    public Collection $patientRooms;
 
     public string $name = "";
     public string $phoneNumber = "";
@@ -31,7 +33,8 @@ class Index extends Component
     public string $educationId = "";
     public string $job = "";
     public string $serviceTypeId = "";
-    public $answers = [];
+    public string $patientRoomId = "";
+    public array $answers = [];
 
     public function __construct(
         protected AgeRepository $ageRepository = new AgeRepository(),
@@ -41,21 +44,24 @@ class Index extends Component
         protected QuestionRepository $questionRepository = new QuestionRepository(),
         protected RespondentRepository $respondentRepository = new RespondentRepository(),
         protected RespondentAnswerRepository $respondentAnswerRepository = new RespondentAnswerRepository(),
+        protected PatientRoomRepository $patientRoomRepository = new PatientRoomRepository()
     ) {
     }
 
     public function mount(): void
     {
-        $this->ageDatas = $this->ageRepository->getAges();
-        $this->educationDatas = $this->educationRepository->getEducations();
-        $this->jobDatas = $this->jobRepository->getJobs();
-        $this->serviceTypeDatas = $this->serviceTypeRepository->getServiceTypes();
-        $this->questionDatas = $this->questionRepository->getQuestions();
-        foreach ($this->questionDatas as $question) {
-            array_push($this->answers, [
+        $this->ages = $this->ageRepository->getAges();
+        $this->educations = $this->educationRepository->getEducations();
+        $this->jobs = $this->jobRepository->getJobs();
+        $this->serviceTypes = $this->serviceTypeRepository->getServiceTypes();
+        $this->questions = $this->questionRepository->getQuestions();
+        $this->patientRooms = $this->patientRoomRepository->getPatientRooms();
+        foreach ($this->questions as $key => $question) {
+            $this->answers[] = [
                 'id' => $question->id,
-                'answer' => ''
-            ]);
+                'answer_id' => ($key === count($this->questions) - 1) ? optional($question->questionAnswers()->first())->id : '',
+                'custom_answer' => ''
+            ];
         }
     }
 
@@ -69,6 +75,7 @@ class Index extends Component
             'education_id' => $this->educationId,
             'job' => $this->job,
             'service_type_id' => $this->serviceTypeId,
+            'patient_room_id' => $this->patientRoomId,
         ];
 
         $validator = Validator::make($respondentData, [
@@ -79,6 +86,7 @@ class Index extends Component
             'education_id' => 'required',
             'job' => 'required',
             'service_type_id' => 'required',
+            'patient_room_id' => 'required',
         ]);
 
         if ($validator->fails())
@@ -89,18 +97,26 @@ class Index extends Component
             $respondent = $this->respondentRepository->addRespondent($respondentData);
             foreach ($this->answers as $answer) {
                 $this->respondentAnswerRepository->addRespondentAnswer([
-                    'question_id' => $answer['id'],
                     'respondent_id' => $respondent->id,
-                    'answer' => $answer['answer']
+                    'question_id' => $answer['id'],
+                    'answer_id' => $answer['answer_id'],
+                    'custom_answer' => $answer['custom_answer']
                 ]);
             }
             DB::commit();
             return redirect(route('home'))->with('status', 'Survei berhasil diinput');
-        } catch (\Throwable $th) {
+        } catch (\Exception $exception) {
+            dd($exception);
             DB::rollBack();
             return redirect(route('home'))->with('error', 'Survei gagal diinput');
         }
     }
+
+    public function setAnswerId($key, $answerId): void
+    {
+        $this->answers[$key]['answer_id'] = $answerId;
+    }
+
 
     #[Layout('layouts.landing.app')]
     public function render(): View

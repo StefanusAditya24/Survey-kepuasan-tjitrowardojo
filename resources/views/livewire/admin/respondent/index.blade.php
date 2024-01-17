@@ -4,6 +4,9 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <h4>Data</h4>
+                    <button wire:click="export" class="btn btn-icon icon-left btn-primary"><i
+                                class="far fa-edit"></i>
+                        Export</button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

@@ -16,8 +16,8 @@ class Detail extends Component
     public string $education = "";
     public string $job = "";
     public string $serviceType = "";
-    public $answers = [];
-    public $questions = [];
+    public array $answers = [];
+    public array $questions = [];
 
     public function __construct(
         protected RespondentRepository $respondentRepository = new RespondentRepository(),
@@ -27,19 +27,26 @@ class Detail extends Component
 
     public function mount(mixed $respondentId): void
     {
-        $respondentData = $this->respondentRepository->getRespondent($respondentId);
-        $this->name = $respondentData->name;
-        $this->phoneNumber = $respondentData->phone_number;
-        $this->gender = $respondentData->gender;
-        $this->age = $respondentData->age->name;
-        $this->education = $respondentData->education->name;
-        $this->job = $respondentData->job;
-        $this->serviceType = $respondentData->serviceType->name;
+        $respondent = $this->respondentRepository->getRespondent($respondentId);
+        $this->name = $respondent->name;
+        $this->phoneNumber = $respondent->phone_number;
+        $this->gender = $respondent->gender;
+        $this->age = $respondent->age->name;
+        $this->education = $respondent->education->name;
+        $this->job = $respondent->job;
+        $this->serviceType = $respondent->serviceType->name;
 
-        $respondentData->answers->each(function ($answer) {
-            $this->questions[] = $this->questionRepository->getQuestion($answer->question_id);
-            $this->answers[] = $answer->answer;
+//        dd($respondent->answers[0]->answer->answer ?? $respondent->answers[0]->custom_answer);
+
+
+
+        $respondent->answers->each(function ($answer) {
+            $question = $this->questionRepository->getQuestion($answer->question_id);
+            $answerValue = !empty($answer->custom_answer) ? $answer->custom_answer : $answer->answer->answer;
+            $this->questions[] = $question;
+            $this->answers[] = $answerValue;
         });
+
     }
 
     public function render(): View
