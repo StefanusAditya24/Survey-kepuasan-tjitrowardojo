@@ -8,6 +8,10 @@ use App\Livewire\Admin\Respondent\Index as RespondentIndex;
 use App\Livewire\Admin\Respondent\Detail as RespondentDetail;
 use App\Livewire\Admin\Question\Index as QuestionIndex;
 use App\Livewire\Admin\Question\Form as QuestionForm;
+use App\Livewire\Admin\Question\Category\CategoryIndex as CategoryIndex;
+use App\Livewire\Admin\Question\Category\CategoryForm as CategoryForm;
+use App\Livewire\Admin\Question\Type\TypeIndex as TypeIndex;
+use App\Livewire\Admin\Question\Type\TypeForm as TypeForm;
 use App\Livewire\Admin\Age\Index as AgeIndex;
 use App\Livewire\Admin\Age\Form as AgeForm;
 use App\Livewire\Admin\Education\Index as EducationIndex;
@@ -43,6 +47,16 @@ Route::prefix('admin')->group(function () {
         Route::prefix('question')->name('question.')->group(function () {
             Route::get('', QuestionIndex::class)->name('index');
             Route::get('form/{questionId?}', QuestionForm::class)->name('form');
+        });
+
+        Route::prefix('category')->name('category.')->group(function () {
+            Route::get('', CategoryIndex::class)->name('index');
+            Route::get('form/{categoryId?}', CategoryForm::class)->name('form');
+        });
+
+        Route::prefix('type')->name('type.')->group(function () {
+            Route::get('', TypeIndex::class)->name('index');
+            Route::get('form/{typeId?}', TypeForm::class)->name('form');
         });
 
         Route::prefix('age')->name('age.')->group(function () {
