@@ -39,13 +39,11 @@ class QuestionSeeder extends Seeder
                 'name' => 'Bagaimana pendapat Saudara tentang kesesuaian produk pelayanan antara yang tercantum dalam standar pelayanan dengan hasil yang diberikan',
                 'category_id' => 1,
                 'question_type_id' => 1,
-                'question_type_id' => 1
             ],
             6 => [
                 'name' => 'Bagaimana pendapat Saudara tentang kemampuan (kompetensi) petugas dalam memberikan pelayanan',
                 'category_id' => 1,
                 'question_type_id' => 1,
-                'question_type_id' => 1
             ],
             7 => [
                 'name' => 'Bagaimana pendapat Saudara tentang perilaku petugas dalam pelayanan terkait kesopanan dan keramahan',

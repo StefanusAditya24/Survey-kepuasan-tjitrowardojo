@@ -19,6 +19,6 @@ class QuestionRepository
 
     public function getQuestions(): Collection
     {
-        return $this->model->all();
+        return $this->model->with(['questionType', 'questionAnswers'])->get();
     }
 }

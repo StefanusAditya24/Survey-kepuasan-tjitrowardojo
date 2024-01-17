@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Models\RespondentAnswer;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class RespondentAnswerRepository
@@ -36,6 +38,15 @@ class RespondentAnswerRepository
         $dataToBeReturn['Lainnya'] = $answers->filter(fn ($answer) => !Str::contains($answer->answer, 'Sesuai'))->count();
 
         return $dataToBeReturn;
+    }
+
+    public function getRespondentAnswerIndex(): array|Collection
+    {
+        return RespondentAnswer::join('question_answers', 'respondent_answers.answer_id', '=', 'question_answers.id')
+            ->join('respondents', 'respondent_answers.respondent_id', '=', 'respondents.id')
+            ->groupBy('question_answers.question_id')
+            ->select('question_answers.question_id', DB::raw('SUM(question_answers.answer_value) as total_weight'))
+            ->get();
     }
 
     public function addRespondentAnswer(array $data): RespondentAnswer
