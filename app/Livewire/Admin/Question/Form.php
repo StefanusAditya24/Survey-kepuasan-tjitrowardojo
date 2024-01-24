@@ -28,27 +28,30 @@ class Form extends Component
         protected CategoryRepository     $categoryRepository = new CategoryRepository(),
         protected QuestionRepository     $questionRepository = new QuestionRepository(),
         protected QuestionTypeRepository $questionTypeRepository = new QuestionTypeRepository()
-
     )
     {
     }
 
     public function mount(mixed $questionId = null): void
     {
+        $this->question = new Question();
         $this->questionCategories = $this->categoryRepository->getCategories();
         $this->questionTypes = $this->questionTypeRepository->getQuestionTypes();
         if (!is_null($questionId)) {
-            $this->question = new Question();
             $this->question = $this->questionRepository->getQuestion($questionId);
             $this->name = $this->question->name;
             $this->questionTypeId = $this->question->question_type_id;
             $this->questionCategoryId = $this->question->category_id;
+            $this->selectedQuestionType = $this->question->questionType->type;
+            $this->weightedAnswers = ($this->question->questionAnswers)->toArray();
+        } else {
+            $this->weightedAnswers[] = [
+                'answer' => '',
+                'answer_value' => '',
+                'question_id' => '',
+            ];
         }
-        $this->weightedAnswers[] = [
-            'answer' => '',
-            'answer_value' => '',
-            'question_id' => '',
-        ];
+
     }
 
     public function save(): mixed
@@ -59,11 +62,11 @@ class Form extends Component
         $question->category_id = $this->questionCategoryId;
         $question->save();
 
-        $questionAnswer = $this->questionAnswer;
         foreach ($this->weightedAnswers as $weightedAnswer) {
+            $questionAnswer = new QuestionAnswer();
             $questionAnswer->answer = $weightedAnswer['answer'];
             $questionAnswer->answer_value = $weightedAnswer['answer_value'];
-            $questionAnswer->question_id = $weightedAnswer['answer_value'];
+            $questionAnswer->question_id = $questionId ?? $question->id;
             $questionAnswer->save();
         }
 

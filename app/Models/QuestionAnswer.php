@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @author Adi Novanto <adinovanto07@gmail.com>
  * @mixin \Illuminate\Database\Eloquent\Builder
+ * @property string $id
  * @property string $answer
  * @property string $answer_value
  * @property string $question_id

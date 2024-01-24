@@ -1,4 +1,4 @@
-<div class="container" style="margin: 4rem">
+<div class="container mx-auto mt-5">
     <div class="card">
         <div class="card-body">
             <h5 class="card-title" style="text-align:center">Survei Kepuasan RS Tjitrowardojo Kabupaten Purworejo

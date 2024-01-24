@@ -13,9 +13,14 @@ class QuestionRepository
     ) {
     }
 
-    public function getQuestion(mixed $questionId): ?Question
+    public function getQuestion(mixed $questionId, ?bool $loadAnswers = false): ?Question
     {
-        return $this->model->findOrFail($questionId);
+        $query = $this->model->newQuery();
+
+        if ($loadAnswers)
+            $query->with(['questionAnswers', 'questionType']);
+
+        return $query->findOrFail($questionId);
     }
 
     public function getQuestions(bool $multipleOnly = false): Collection

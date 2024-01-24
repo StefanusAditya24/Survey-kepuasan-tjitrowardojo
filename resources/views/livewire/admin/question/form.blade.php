@@ -13,7 +13,7 @@
                         </div>
                         <div class="form-group">
                             <label id="category">Kategori</label>
-                            <select id="category" wire:model="questionCategory" class="form-control">
+                            <select id="category" wire:model="questionCategoryId" class="form-control">
                                 <option value="" disabled="" selected="">Pilih Jenis Kategori...
                                 </option>
                                 @foreach ($questionCategories as $category)
@@ -23,7 +23,7 @@
                         </div>
                         <div class="form-group">
                             <label id="type">Pertanyaan</label>
-                            <select id="type" wire:change="selectQuestionType($event.target.value)"
+                            <select id="type" wire:model="questionTypeId" wire:change="selectQuestionType($event.target.value)"
                                     class="form-control">
                                 <option value="" disabled="" selected="">Pilih Jenis Pertanyaan...
                                 </option>

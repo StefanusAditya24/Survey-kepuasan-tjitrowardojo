@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Builder
+ * @property string $id
  * @property string $name
  * @property string $question_type_id
  * @property QuestionType $questionType
