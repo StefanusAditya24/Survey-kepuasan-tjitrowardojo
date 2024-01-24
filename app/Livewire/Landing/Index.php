@@ -26,6 +26,7 @@ class Index extends Component
     public Collection $questions;
     public Collection $patientRooms;
 
+    public string $activeTab = "personal";
     public string $name = "";
     public string $phoneNumber = "";
     public string $gender = "";
@@ -34,6 +35,7 @@ class Index extends Component
     public string $job = "";
     public string $serviceTypeId = "";
     public string $patientRoomId = "";
+    public string $selectedService = "";
     public array $answers = [];
 
     public function __construct(
@@ -60,7 +62,8 @@ class Index extends Component
             $this->answers[] = [
                 'id' => $question->id,
                 'answer_id' => ($key === count($this->questions) - 1) ? optional($question->questionAnswers()->first())->id : '',
-                'custom_answer' => ''
+                'custom_answer' => '',
+                'disabled_custom' => true
             ];
         }
     }
@@ -86,7 +89,6 @@ class Index extends Component
             'education_id' => 'required',
             'job' => 'required',
             'service_type_id' => 'required',
-            'patient_room_id' => 'required',
         ]);
 
         if ($validator->fails())
@@ -106,10 +108,14 @@ class Index extends Component
             DB::commit();
             return redirect(route('home'))->with('status', 'Survei berhasil diinput');
         } catch (\Exception $exception) {
-            dd($exception);
             DB::rollBack();
             return redirect(route('home'))->with('error', 'Survei gagal diinput');
         }
+    }
+
+    public function setActiveTab($tab): void
+    {
+        $this->activeTab = $tab;
     }
 
     public function setAnswerId($key, $answerId): void
@@ -117,6 +123,22 @@ class Index extends Component
         $this->answers[$key]['answer_id'] = $answerId;
     }
 
+    public function selectService(string $serviceType): void
+    {
+        $data = json_decode($serviceType, true);
+        if ($data) {
+            $this->serviceTypeId = $data['id'];
+            $this->selectedService = $data['name'];
+        }
+    }
+
+    public function updateAnswer(string $key, string $value): void
+    {
+        if ($value === "Lainnya")
+            $this->answers[$key]['disabled_custom'] = false;
+        else
+            $this->answers[$key]['disabled_custom'] = true;
+    }
 
     #[Layout('layouts.landing.app')]
     public function render(): View

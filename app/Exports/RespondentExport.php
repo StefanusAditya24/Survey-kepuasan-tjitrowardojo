@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Exports;
 
-use App\Models\Respondent;
 use App\Repository\QuestionRepository;
 use App\Repository\RespondentAnswerRepository;
 use App\Repository\RespondentRepository;
@@ -27,19 +26,22 @@ class RespondentExport implements FromView
     public function view(): View
     {
         $current_date = Carbon::now();
-        $questions = $this->questionRepository->getQuestions();
-        $respondent = $this->respondentRepository->getRespondents($current_date, true);
+        $questions = $this->questionRepository->getQuestions(true);
+        $respondents = $this->respondentRepository->getRespondents($current_date, true);
         $attributes = $this->respondentAnswerRepository->getRespondentAnswerIndex();
-        $attributeIndexes = $this->respondentAnswerRepository->getRespondentAnswerIndex();
-        $totalRespondent = $this->respondentRepository->countRespondent();
-        $wightedIndex = 12;
+        $calculatedAttributes = [];
+        foreach ($attributes as $attribute) {
+            $calculatedAttributes[] = $attribute['total_weight'] / $attribute['respondent_count'];
+        }
+        $weightedAttribute = array_sum($calculatedAttributes);
+        $serviceUnitIndex = $weightedAttribute * 25;
         return view('livewire.admin.respondent.export', [
             'questions' => $questions,
-            'respondents' => $respondent,
+            'respondents' => $respondents,
             'attributes' => $attributes,
-            'attributeIndexes' => $attributeIndexes,
-            'wightedIndex' => $wightedIndex,
-            'totalRespondent' => $totalRespondent
+            'calculatedAttributes' => $calculatedAttributes,
+            'weightedAttribute' => $weightedAttribute,
+            'serviceUnitIndex' => $serviceUnitIndex
         ]);
     }
 }

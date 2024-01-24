@@ -21,9 +21,8 @@ class DatabaseSeeder extends Seeder
             PatientRoomSeeder::class,
             QuestionTypeSeeder::class,
             QuestionSeeder::class,
-            QuestionAnswerSeeder::class
+            QuestionAnswerSeeder::class,
+            UserSeeder::class
         ]);
-
-        User::create(['username' => 'admin', 'password' => bcrypt('admin')]);
     }
 }

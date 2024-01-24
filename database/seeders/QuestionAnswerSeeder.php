@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\Question;
-use App\Models\QuestionAnswer;
 use Illuminate\Database\Seeder;
 
 /**
@@ -116,11 +115,10 @@ class QuestionAnswerSeeder extends Seeder
         ];
 
 
+        /* @var Question $question */
         foreach ($questions as $question) {
-            // Get the answers for the current question
             $answersForQuestion = $answers[$question->name] ?? [];
 
-            // Associate the answers with the question
             foreach ($answersForQuestion as $answerData) {
                 $question->questionAnswers()->create([
                     'answer' => $answerData['answer'],

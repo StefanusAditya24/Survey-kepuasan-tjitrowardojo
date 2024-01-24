@@ -60,7 +60,7 @@
         let respondentPerBulanChart;
 
         function initRespondentPerBulanChart(data) {
-            var ctx = document.getElementById("myChart").getContext('2d');
+            const ctx = document.getElementById("myChart").getContext('2d');
             respondentPerBulanChart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -70,7 +70,6 @@
                         data: data,
                         borderWidth: 2,
                         backgroundColor: 'rgba(63,82,227,.8)',
-                        borderWidth: 0,
                         borderColor: 'transparent',
                         pointBorderWidth: 0,
                         pointRadius: 3.5,
@@ -87,7 +86,7 @@
         let charts = []
 
         function initPieChart(key, data, title) {
-            var ctx = document.getElementById(`question-${key}`).getContext('2d');
+            const ctx = document.getElementById(`question-${key}`).getContext('2d');
             let tempChart = new Chart(ctx, {
                 type: 'pie',
                 data: {
@@ -119,7 +118,7 @@
 
     <script>
         document.addEventListener('livewire:initialized', () => {
-            initRespondentPerBulanChart(@json($this->getMontlyRespondent));
+            initRespondentPerBulanChart(@json($this->getMonthlyRespondent));
             @foreach ($questions as $key => $question)
 
                 initPieChart({{ $key }}, @json($this->getQuestionData[$key]), "{{ $question->name }}")

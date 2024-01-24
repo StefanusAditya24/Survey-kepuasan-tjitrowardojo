@@ -28,24 +28,22 @@
     <tr>
         <td colspan="2">Total Nilai Per unsur</td>
         @foreach($attributes as $attribute)
-            <td>{{ $attribute->total_weight }}</td>
+            <td>{{ $attribute['total_weight'] }}</td>
         @endforeach
     </tr>
     <tr>
         <td colspan="2">IKM Per unsur</td>
-        @foreach($attributes as $attribute)
-            <td>{{ $attribute->total_weight / $totalRespondent }}</td>
+        @foreach($calculatedAttributes as $calculatedAttribute)
+            <td>{{ $calculatedAttribute }}</td>
         @endforeach
     </tr>
     <tr>
         <td colspan="2">NRR Tertimbang</td>
-        @foreach($attributes as $attribute)
-            <td>{{ ($attribute->total_weight / $totalRespondent ) * 0.11}}</td>
-        @endforeach
+        <td colspan="9"  style="text-align: center">{{ $weightedAttribute }}</td>
     </tr>
     <tr>
         <td colspan="2">IKM Unit Layanan</td>
-        <td colspan="17" style="text-align: center">0</td>
+        <td colspan="9"  style="text-align: center">{{ $serviceUnitIndex }}</td>
     </tr>
     </tbody>
 </table>

@@ -8,6 +8,7 @@
 <script src="{{ asset('js/stisla.js') }}"></script>
 
 <!-- JS Libraries -->
+<script src="{{ asset('modules/jquery.min.js') }}"></script>
 <script src="{{ asset('modules/jquery.sparkline.min.js') }}"></script>
 <script src="{{ asset('modules/chart.min.js') }}"></script>
 <script src="{{ asset('modules/owlcarousel2/dist/owl.carousel.min.js') }}"></script>
@@ -18,8 +19,10 @@
 <script src="{{ asset('modules/datatables/Select-1.2.4/js/dataTables.select.min.js') }}"></script>
 <script src="{{ asset('modules/jquery-ui/jquery-ui.min.js') }}"></script>
 <script src="{{ asset('modules/izitoast/js/iziToast.min.js') }}"></script>
+<script src="{{ asset('modules/bootstrap/js/bootstrap.min.js') }}"></script>
 
 <!-- Page Specific JS File -->
+<script src="{{ asset('js/page/bootstrap-modal.js') }}"></script>
 
 <!-- Template JS File -->
 <script src="{{ asset('js/scripts.js') }}"></script>

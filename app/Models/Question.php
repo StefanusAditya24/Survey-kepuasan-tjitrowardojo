@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property QuestionType $questionType
  * @property string $category_id
  * @property Category $category
+ * @property QuestionAnswer $questionAnswers
  */
 class Question extends Model
 {

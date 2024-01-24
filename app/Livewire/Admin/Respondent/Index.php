@@ -9,12 +9,14 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class Index extends Component
 {
     public Collection $respondentDatas;
+    use WithFileUploads;
 
     public function __construct(
         protected RespondentRepository $respondentRepository = new RespondentRepository()

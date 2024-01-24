@@ -34,7 +34,7 @@ class Dashboard extends Component
     public function updated(): void
     {
         $this->updateRespondents();
-        $this->dispatch('filter-update', $this->getMontlyRespondent(), $this->getQuestionData());
+        $this->dispatch('filter-update', $this->getMonthlyRespondent(), $this->getQuestionData());
     }
 
     private function updateRespondents(): void
@@ -45,11 +45,11 @@ class Dashboard extends Component
     }
 
     #[Computed()]
-    public function getMontlyRespondent(): array
+    public function getMonthlyRespondent(): array
     {
         $data = [];
+        $year = $this->filterDate == "" ? Carbon::now()->year : explode('-', $this->filterDate)[0];
         for ($i = 1; $i  <= 12; $i++) {
-            $year = $this->filterDate == "" ? Carbon::now()->year : explode('-', $this->filterDate)[0];
             $data[] = $this->respondentRepository->getRespondents(Carbon::createFromFormat('Y-m', "$year-$i"))->count();
         }
         return $data;
@@ -58,12 +58,11 @@ class Dashboard extends Component
     #[Computed()]
     public function getQuestionData(): array
     {
-        $data = [];
-        foreach ($this->questions as $question) {
-            $filterDate = $this->filterDate == "" ? null : Carbon::createFromFormat('Y-m', $this->filterDate);
-            $data[] =  $this->respondentAnswerRepository->getAnswerCountByQuestionId($filterDate, $question->id);
-        }
-        return $data;
+        $filterDate = $this->filterDate == "" ? null : Carbon::createFromFormat('Y-m', $this->filterDate);
+
+        return $this->questions->map(function ($question) use ($filterDate) {
+            return $this->respondentAnswerRepository->getAnswerCountByQuestionId($filterDate, $question->id);
+        })->toArray();
     }
 
 
