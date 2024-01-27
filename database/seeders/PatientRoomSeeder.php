@@ -35,6 +35,10 @@ class PatientRoomSeeder extends Seeder
             15 => 'VK'
         ];
 
-        foreach ($rooms as $room) PatientRoom::create(['room_name' => $room]);
+        foreach ($rooms as $id => $room) {
+            if (!PatientRoom::where('id', $id)->exists()) {
+                PatientRoom::create(['id' => $id, 'room_name' => $room]);
+            }
+        }
     }
 }

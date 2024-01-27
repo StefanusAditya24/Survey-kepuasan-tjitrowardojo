@@ -24,6 +24,10 @@ class ServiceTypeSeeder extends Seeder
             9 => 'Bagian Administrasi',
         ];
 
-        foreach ($serviceTypeOptions as $serviceType) ServiceType::create(['name' => $serviceType]);
+        foreach ($serviceTypeOptions as $id => $serviceType) {
+            if (!ServiceType::where('id', $id)->exists()) {
+                ServiceType::create(['id' => $id, 'name' => $serviceType]);
+            }
+        }
     }
 }

@@ -24,6 +24,6 @@ class PatientRoomRepository
 
     public function getPatientRooms(): Collection
     {
-        return $this->patientRoom->all();
+        return $this->patientRoom->orderBy('room_name')->get();
     }
 }

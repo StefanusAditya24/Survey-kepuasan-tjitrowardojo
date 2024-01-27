@@ -21,7 +21,10 @@ class AgeSeeder extends Seeder
             9 => 'Lebih dari 60 Tahun',
         ];
 
-        foreach ($ageRanges as $age)
-            Age::create(['name' => $age]);
+        foreach ($ageRanges as $id => $ageRange) {
+            if (!Age::where('id', $id)->exists()) {
+                Age::create(['id' => $id, 'name' => $ageRange]);
+            }
+        }
     }
 }

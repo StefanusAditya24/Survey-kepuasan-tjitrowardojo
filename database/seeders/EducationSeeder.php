@@ -21,6 +21,10 @@ class EducationSeeder extends Seeder
             6 => 'PASCASARJANA / LEBIH',
         ];
 
-        foreach ($educationOptions as $education) Education::create(['name' => $education]);
+        foreach ($educationOptions as $id => $educationOption) {
+            if (!Education::where('id', $id)->exists()) {
+                Education::create(['id' => $id, 'name' => $educationOption]);
+            }
+        }
     }
 }

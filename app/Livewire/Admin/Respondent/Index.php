@@ -3,6 +3,8 @@
 namespace App\Livewire\Admin\Respondent;
 
 use App\Exports\RespondentExport;
+use App\Repository\QuestionRepository;
+use App\Repository\RespondentAnswerRepository;
 use App\Repository\RespondentRepository;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -16,16 +18,42 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 class Index extends Component
 {
     public Collection $respondentDatas;
+    public ?Carbon $startFilterDate;
+    public ?Carbon $endFilterDate;
+    public string $selectedFilter = "single";
     use WithFileUploads;
 
     public function __construct(
-        protected RespondentRepository $respondentRepository = new RespondentRepository()
-    ) {
+        protected RespondentRepository       $respondentRepository = new RespondentRepository(),
+        protected QuestionRepository         $questionRepository = new QuestionRepository(),
+        protected RespondentAnswerRepository $respondentAnswerRepository = new RespondentAnswerRepository(),
+    )
+    {
     }
 
     public function mount(): void
     {
-        $this->respondentDatas =  $this->respondentRepository->getRespondents();
+        $this->getFilteredRespondents();
+    }
+
+    public function updatedSelectedFilter(): void
+    {
+        $this->getFilteredRespondents();
+    }
+
+    public function updatedStartFilterDate(): void
+    {
+        $this->getFilteredRespondents();
+    }
+
+    public function updatedEndFilterDate(): void
+    {
+        $this->getFilteredRespondents();
+    }
+
+    private function getFilteredRespondents(): void
+    {
+        $this->respondentDatas = $this->getRespondents();
     }
 
     public function delete(mixed $respondentId): mixed
@@ -40,12 +68,47 @@ class Index extends Component
         $currentDate = Carbon::now();
         $currentDate->format('d-m-Y');
 
-        return Excel::download(new RespondentExport, "Respondent_$currentDate.xlsx");
+        return Excel::download(new RespondentExport(
+            $this->getRespondents(),
+            $this->questionRepository->getQuestions(true),
+            $this->respondentAnswerRepository->getRespondentAnswerIndex()
+        ), "Respondent_$currentDate.xlsx");
     }
 
     #[Title('Respondent')]
     public function render(): View
     {
         return view('livewire.admin.respondent.index');
+    }
+
+    private function getRespondents(): Collection
+    {
+        $currentDate = Carbon::now();
+
+        $firstDayOfMonth = $currentDate->copy()->startOfMonth();
+        $lastDayOfMonth = $currentDate->copy()->endOfMonth();
+
+        switch ($this->selectedFilter) {
+            case "single":
+                $this->startFilterDate = $firstDayOfMonth;
+                $this->endFilterDate = $lastDayOfMonth;
+                break;
+
+            case "triple":
+                $this->startFilterDate = $currentDate->copy()->subMonths(3)->startOfMonth();
+                $this->endFilterDate = $lastDayOfMonth;
+                break;
+
+            case "year":
+                $this->startFilterDate = $currentDate->copy()->startOfYear();
+                $this->endFilterDate = $currentDate->copy()->endOfYear();
+                break;
+
+            case "all":
+                $this->startFilterDate = null;
+                $this->endFilterDate = null;
+        }
+
+        return $this->respondentRepository->getRespondents($this->startFilterDate, $this->endFilterDate);
     }
 }

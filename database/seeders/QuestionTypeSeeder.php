@@ -23,6 +23,10 @@ class QuestionTypeSeeder extends Seeder
             3 => 'Open Ended Question'
         ];
 
-        foreach ($question_types as $question_type) QuestionType::create(['type' => $question_type]);
+        foreach ($question_types as $id => $question_type) {
+            if (!QuestionType::where('id', $id)->exists()) {
+                QuestionType::create(['id' => $id, 'type' => $question_type]);
+            }
+        }
     }
 }

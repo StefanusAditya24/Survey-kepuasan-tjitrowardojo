@@ -6,6 +6,7 @@ use App\Repository\AgeRepository;
 use App\Repository\EducationRepository;
 use App\Repository\JobRepository;
 use App\Repository\PatientRoomRepository;
+use App\Repository\PolyclinicRepository;
 use App\Repository\QuestionRepository;
 use App\Repository\RespondentAnswerRepository;
 use App\Repository\RespondentRepository;
@@ -25,8 +26,10 @@ class Index extends Component
     public Collection $serviceTypes;
     public Collection $questions;
     public Collection $patientRooms;
+    public Collection $polyclinics;
 
     public string $activeTab = "personal";
+    public int $currentPage = 1;
     public string $name = "";
     public string $phoneNumber = "";
     public string $gender = "";
@@ -35,6 +38,7 @@ class Index extends Component
     public string $job = "";
     public string $serviceTypeId = "";
     public string $patientRoomId = "";
+    public string $polyclinicId = "";
     public string $selectedService = "";
     public array $answers = [];
 
@@ -46,7 +50,8 @@ class Index extends Component
         protected QuestionRepository $questionRepository = new QuestionRepository(),
         protected RespondentRepository $respondentRepository = new RespondentRepository(),
         protected RespondentAnswerRepository $respondentAnswerRepository = new RespondentAnswerRepository(),
-        protected PatientRoomRepository $patientRoomRepository = new PatientRoomRepository()
+        protected PatientRoomRepository $patientRoomRepository = new PatientRoomRepository(),
+        protected PolyclinicRepository $polyclinicRepository = new PolyclinicRepository()
     ) {
     }
 
@@ -58,6 +63,7 @@ class Index extends Component
         $this->serviceTypes = $this->serviceTypeRepository->getServiceTypes();
         $this->questions = $this->questionRepository->getQuestions();
         $this->patientRooms = $this->patientRoomRepository->getPatientRooms();
+        $this->polyclinics = $this->polyclinicRepository->getPolyclinics();
         foreach ($this->questions as $key => $question) {
             $this->answers[] = [
                 'id' => $question->id,
@@ -78,7 +84,8 @@ class Index extends Component
             'education_id' => $this->educationId,
             'job' => $this->job,
             'service_type_id' => $this->serviceTypeId,
-            'patient_room_id' => $this->patientRoomId,
+            'patient_room_id' => empty($this->patientRoomId) ? null : $this->patientRoomId,
+            'polyclinic_id' => empty($this->polyclinicId) ? null : $this->polyclinicId,
         ];
 
         $validator = Validator::make($respondentData, [
@@ -132,6 +139,16 @@ class Index extends Component
         }
     }
 
+    public function nextPage(): void
+    {
+        $this->currentPage++;
+    }
+
+    public function previousPage(): void
+    {
+        $this->currentPage--;
+    }
+
     public function updateAnswer(string $key, string $value): void
     {
         if ($value === "Lainnya")
@@ -143,6 +160,12 @@ class Index extends Component
     #[Layout('layouts.landing.app')]
     public function render(): View
     {
-        return view('livewire.landing.index');
+        $page1Questions = $this->questions->where('questionType.id', 1);
+        $page2Questions = $this->questions->where('questionType.id', '>', 1);
+
+        return view('livewire.landing.index', [
+            'page1Questions' => $page1Questions,
+            'page2Questions' => $page2Questions,
+        ]);
     }
 }

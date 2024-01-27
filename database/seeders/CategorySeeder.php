@@ -19,7 +19,10 @@ class CategorySeeder extends Seeder
             2 => 'Corruption Prevention',
         ];
 
-        foreach ($categories as $category)
-            Category::create(['category_name' => $category]);
+        foreach ($categories as $id => $category) {
+            if (!Category::where('id', $id)->exists()) {
+                Category::create(['id' => $id, 'category_name' => $category]);
+            }
+        }
     }
 }

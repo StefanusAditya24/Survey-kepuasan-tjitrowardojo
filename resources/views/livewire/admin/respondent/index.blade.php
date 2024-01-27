@@ -4,9 +4,21 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <h4>Data</h4>
-                    <button wire:click="export" class="btn btn-icon icon-left btn-primary"><i
-                                class="far fa-edit"></i>
-                        Export</button>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <select id="filterDate" wire:key="selectedFilter" wire:model.live="selectedFilter" class="form-control">
+                                <option value="" disabled selected="">Pilih Range Tanggal...</option>
+                                <option value="all">Semua</option>
+                                <option value="single">Bulan ini</option>
+                                <option value="triple">3 Bulan</option>
+                                <option value="year">Tahunan</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <button wire:click="export" class="btn btn-icon icon-left btn-primary"><i class="far fa-edit"></i> Export</button>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

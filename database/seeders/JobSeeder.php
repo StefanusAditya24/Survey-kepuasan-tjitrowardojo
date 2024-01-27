@@ -20,6 +20,10 @@ class JobSeeder extends Seeder
             5 => 'Wiraswasta',
         ];
 
-        foreach ($jobOptions as $job) Job::create(['name' => $job]);
+        foreach ($jobOptions as $id => $jobOption) {
+            if (!Job::where('id', $id)->exists()) {
+                Job::create(['id' => $id, 'name' => $jobOption]);
+            }
+        }
     }
 }

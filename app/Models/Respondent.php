@@ -30,7 +30,8 @@ class Respondent extends Model
         'education_id',
         'job',
         'service_type_id',
-        'patient_room_id'
+        'patient_room_id',
+        'polyclinic_id'
     ];
 
     public function gender(): Attribute
