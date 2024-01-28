@@ -23,7 +23,7 @@ class QuestionRepository
         return $query->findOrFail($questionId);
     }
 
-    public function getQuestions(bool $multipleOnly = false): Collection
+    public function getQuestions(?bool $multipleOnly = false, ?bool $excludeMultiple = false): Collection
     {
         $questions = $this->model->with(['questionType', 'questionAnswers']);
 
@@ -32,6 +32,12 @@ class QuestionRepository
                $query->where('type', 'Multiple Choice');
            });
        }
+
+        if ($excludeMultiple) {
+            $questions->whereHas('questionType', function ($query) {
+                $query->whereNot('type', 'Multiple Choice');
+            });
+        }
 
         return $questions->get();
     }

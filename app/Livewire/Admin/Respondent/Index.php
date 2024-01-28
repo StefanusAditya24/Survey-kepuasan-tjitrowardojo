@@ -53,7 +53,7 @@ class Index extends Component
 
     private function getFilteredRespondents(): void
     {
-        $this->respondentDatas = $this->getRespondents();
+        $this->respondentDatas = $this->getRespondents(false, false)['respondents'];
     }
 
     public function delete(mixed $respondentId): mixed
@@ -69,9 +69,12 @@ class Index extends Component
         $currentDate->format('d-m-Y');
 
         return Excel::download(new RespondentExport(
-            $this->getRespondents(),
+            $this->getRespondents(true, false)['respondents'],
+            $this->getRespondents(false, true)['respondents'],
             $this->questionRepository->getQuestions(true),
-            $this->respondentAnswerRepository->getRespondentAnswerIndex()
+            $this->questionRepository->getQuestions(false, true),
+            $this->getRespondents(true, false)['respondentAnswers'],
+            $this->getRespondents(true, false)['respondentAnswers']
         ), "Respondent_$currentDate.xlsx");
     }
 
@@ -81,7 +84,7 @@ class Index extends Component
         return view('livewire.admin.respondent.index');
     }
 
-    private function getRespondents(): Collection
+    private function getRespondents(bool $onlyMultiple, bool $excludeMultiple): array
     {
         $currentDate = Carbon::now();
 
@@ -109,6 +112,9 @@ class Index extends Component
                 $this->endFilterDate = null;
         }
 
-        return $this->respondentRepository->getRespondents($this->startFilterDate, $this->endFilterDate);
+        return [
+            'respondents' => $this->respondentRepository->getRespondents($this->startFilterDate, $this->endFilterDate, true, $onlyMultiple, $excludeMultiple),
+            'respondentAnswers' => $this->respondentAnswerRepository->getRespondentAnswerIndex($this->startFilterDate, $this->endFilterDate, $onlyMultiple, $excludeMultiple)
+        ];
     }
 }

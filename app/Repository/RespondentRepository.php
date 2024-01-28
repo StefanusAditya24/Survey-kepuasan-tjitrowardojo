@@ -21,13 +21,17 @@ class RespondentRepository
         return $this->model->findOrFail($respondentId);
     }
 
-    public function getRespondents(?Carbon $startFilter = null, ?Carbon $endFilter = null, ?bool $loadAssociation = false, ?bool $onlyMultiple = false): Collection
+    public function getRespondents(?Carbon $startFilter = null, ?Carbon $endFilter = null, ?bool $loadAssociation = false, ?bool $onlyMultiple = false, ?bool $excludeMultiple = false): Collection
     {
         $respondent = $this->model->query();
         $administratorRole = (string)auth()->user()->patient_room_id;
 
         $multipleQuestions = $this->question->whereHas('questionType', function ($query) {
-            $query->where('type', 'Multiple Choice');
+            $query->where('type', '=', 'Multiple Choice');
+        })->pluck('id')->toArray();
+
+        $notMultipleQuestion = $this->question->whereHas('questionType', function ($query) {
+            $query->whereNot('type', '=', 'Multiple Choice');
         })->pluck('id')->toArray();
 
         if ($administratorRole) {
@@ -44,13 +48,18 @@ class RespondentRepository
             ]);
         }
 
-        $respondent->when($loadAssociation, function ($query) use ($onlyMultiple, $multipleQuestions) {
+        $respondent->when($loadAssociation, function ($query) use ($onlyMultiple, $multipleQuestions, $notMultipleQuestion, $excludeMultiple) {
             $query->with([
-                'answers' => function ($query) use ($multipleQuestions) {
+                'answers' => function ($query) use ($onlyMultiple, $excludeMultiple, $multipleQuestions, $notMultipleQuestion) {
                     $query->with(['answer']);
-                    if ($multipleQuestions) {
+                    if ($onlyMultiple) {
                         $query->whereHas('answer', function ($subQuery) use ($multipleQuestions) {
                             $subQuery->whereIn('question_id', $multipleQuestions);
+                        });
+                    }
+                    if ($excludeMultiple) {
+                        $query->whereHas('answer', function ($subQuery) use ($notMultipleQuestion) {
+                            $subQuery->whereIn('question_id', $notMultipleQuestion);
                         });
                     }
                 },
