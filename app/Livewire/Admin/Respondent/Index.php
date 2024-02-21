@@ -67,7 +67,7 @@ class Index extends Component
     {
         $currentDate = Carbon::now();
         $currentDate->format('d-m-Y');
-
+        
         return Excel::download(new RespondentExport(
             $this->getRespondents(true, false)['respondents'],
             $this->getRespondents(false, true)['respondents'],

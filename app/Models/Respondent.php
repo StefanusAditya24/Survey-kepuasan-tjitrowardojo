@@ -68,4 +68,9 @@ class Respondent extends Model
     {
         return $this->belongsTo(PatientRoom::class);
     }
+    
+    public function polyclinic(): BelongsTo
+    {
+        return $this->belongsTo(Polyclinic::class);
+    }
 }
