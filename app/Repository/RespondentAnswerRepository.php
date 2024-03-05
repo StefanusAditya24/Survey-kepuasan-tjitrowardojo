@@ -12,6 +12,7 @@ class RespondentAnswerRepository
 {
     public function __construct(
         protected RespondentAnswer $model = new RespondentAnswer(),
+        protected RespondentRepository $respondentRepository = new RespondentRepository()
     ) {
     }
 
@@ -45,7 +46,7 @@ class RespondentAnswerRepository
 
         $resultArray = $result->toArray();
         $countPerQuestionArray = $countPerQuestion->toArray();
-
+        
         return $this->restructureResults($resultArray, $countPerQuestionArray);
     }
 
@@ -57,14 +58,17 @@ class RespondentAnswerRepository
     protected function getRespondentAnswerIndexQuery(?Carbon $startFilter = null, ?Carbon $endFilter = null,
                                                      ?bool $onlyMultiple = false, ?bool $excludeMultiple = false): \Illuminate\Database\Eloquent\Builder
     {
-        (string) $admin = auth()->user()->patient_room_id;
+        (string) $userPatientRoomId = auth()->user()->patient_room_id;
 
         $query = $this->model->newQuery()
             ->join('question_answers as qa', 'respondent_answers.answer_id', '=', 'qa.id')
             ->join('respondents as r', 'respondent_answers.respondent_id', '=', 'r.id')
             ->join('questions as q', 'qa.question_id', '=', 'q.id')
-            ->join('question_types as qt', 'q.question_type_id', '=', 'qt.id')
-            ->where('r.patient_room_id', '=', $admin);
+            ->join('question_types as qt', 'q.question_type_id', '=', 'qt.id');
+        
+        if ($userPatientRoomId) {
+            $query->where('r.patient_room_id', '=', $userPatientRoomId);
+        }
 
         if ($onlyMultiple) {
             $query->where('qt.type', '=', 'Multiple Choice');
@@ -83,10 +87,15 @@ class RespondentAnswerRepository
                 $endFilter->endOfDay(),
             ]);
         }
-
-        $query->groupBy('qa.question_id', 'r.patient_room_id')
-            ->select('qa.question_id', DB::raw('SUM(qa.answer_value) as total_weight'), 'r.patient_room_id');
-
+        
+        if ($userPatientRoomId) {
+            $query->groupBy('qa.question_id', 'r.patient_room_id')
+                ->select('qa.question_id', DB::raw('SUM(qa.answer_value) as total_weight', 'r.patient_room_id'));
+        } else {
+            $query->groupBy('qa.question_id')
+                ->select('qa.question_id', DB::raw('SUM(qa.answer_value) as total_weight'));
+        }
+        
         return $query;
     }
 
@@ -132,11 +141,13 @@ class RespondentAnswerRepository
     protected function restructureResults(array $resultArray, array $countPerQuestionArray): array
     {
         $questionMap = [];
+        $respondentTotal = $this->respondentRepository->getRespondentTotal();
 
         foreach ($resultArray as $item) {
             $questionMap[$item['question_id']] = [
                 'question_id' => $item['question_id'],
-                'total_weight' => $item['total_weight'],
+                'total_weight' => intval($item['total_weight']),
+                'average_weight' => number_format(intval($item['total_weight']) / $respondentTotal, 2),
                 'respondent_count' => 0,
             ];
         }

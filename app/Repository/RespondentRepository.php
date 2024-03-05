@@ -27,7 +27,8 @@ class RespondentRepository
         $administratorRole = (string)auth()->user()->patient_room_id;
 
         $multipleQuestions = $this->question->whereHas('questionType', function ($query) {
-            $query->where('type', '=', 'Multiple Choice');
+            $query->where('type', '=', 'Multiple Choice')
+                ->orWhere('question_types.type', '=', 'Open Ended Question');
         })->pluck('id')->toArray();
 
         $notMultipleQuestion = $this->question->whereHas('questionType', function ($query) {
@@ -74,9 +75,9 @@ class RespondentRepository
         return $respondent->get();
     }
 
-    public function countRespondent(): int
+    public function getRespondentTotal(): int
     {
-        (string)$administratorRole = auth()->user()->patient_room_id;
+        (string) $administratorRole = auth()->user()->patient_room_id;
         $respondent = $this->model->query();
 
         if ($administratorRole !== null)

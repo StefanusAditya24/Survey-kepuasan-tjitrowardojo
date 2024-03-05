@@ -24,7 +24,11 @@
             <td>{{ Str::title($respondent->polyclinic->poly_name ?? "") }}</td>
             <td>{{ Str::title($respondent->patientRoom->room_name ?? "") }}</td>
             @foreach($respondent->answers as $answer)
-                <td>{{ $answer->answer->answer_value }}</td>
+                @if($loop->last)
+                    <td>{{ $answer->custom_answer }}</td>
+                @else
+                    <td>{{  $answer->answer->answer_value  }}</td>
+                @endif
             @endforeach
         </tr>
     @endforeach
@@ -39,16 +43,28 @@
     </tr>
     <tr>
         <td colspan="5">IKM Per unsur</td>
-        @foreach($calculatedAttributes as $calculatedAttribute)
-            <td>{{ $calculatedAttribute }}</td>
+        @foreach($attributes as $attribute)
+            <td>{{ $attribute['average_weight'] }}</td>
         @endforeach
     </tr>
     <tr>
-        <td colspan="5">NRR Tertimbang</td>
-        <td colspan="9" style="text-align: center">{{ $weightedAttribute }}</td>
+        <td colspan="5">Nilai rata" per unsur</td>
+        @foreach($averageAttributes as $averageAttribute)
+            <td>{{ $averageAttribute }}</td>
+        @endforeach
     </tr>
     <tr>
         <td colspan="5" >IKM Unit Layanan</td>
+        @foreach($calculatedAverageAttributes as $calculatedAverageAttribute)
+            <td>{{ $calculatedAverageAttribute }}</td>
+        @endforeach
+    </tr>
+    <tr>
+        <td colspan="5" >Total IKM</td>
+        <td colspan="9" style="text-align: center">{{ $totalCalculatedAverageAttributes }}</td>
+    </tr>
+    <tr>
+        <td colspan="5">Jumlah Total</td>
         <td colspan="9" style="text-align: center">{{ $serviceUnitIndex }}</td>
     </tr>
     </tbody>

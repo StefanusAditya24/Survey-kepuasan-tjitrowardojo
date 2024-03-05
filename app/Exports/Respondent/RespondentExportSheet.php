@@ -30,18 +30,25 @@ class RespondentExportSheet implements FromView, WithTitle
 
     public function view(): View
     {
-        $calculatedAttributes = [];
+//        dd($this->respondentAnswers);
+        $averageAttributes = [];
+        $calculatedAverageAttributes = [];
         foreach ($this->respondentAnswers as $respondentAnswer) {
-            $calculatedAttributes[] = $respondentAnswer['respondent_count'] === 0 ? 0 : $respondentAnswer['total_weight'] / $respondentAnswer['respondent_count'];
+            $averageAttributes[] = $respondentAnswer['respondent_count'] === 0 ? 0 : $respondentAnswer['average_weight'] * 25;
+            $calculatedAverageAttributes[] = $respondentAnswer['respondent_count'] === 0 ? 0 : $respondentAnswer['average_weight'] * 0.11;
         }
-        $weightedAttribute = array_sum($calculatedAttributes);
-        $serviceUnitIndex = $weightedAttribute * 25;
+        $totalCalculatedAverageAttributes = array_sum($calculatedAverageAttributes) ;
+        $serviceUnitIndex = $totalCalculatedAverageAttributes * 25;
         return view('livewire.admin.respondent.export', [
             'questions' => $this->questions,
             'respondents' => $this->respondents,
             'attributes' => $this->respondentAnswers,
-            'calculatedAttributes' => $calculatedAttributes,
-            'weightedAttribute' => $weightedAttribute,
+//            'calculatedAttributes' =>  $respondentAnswer['respondent_count'],
+//            'weightedAttribute' => $weightedAttribute,
+//            'serviceUnitIndex' => $serviceUnitIndex
+            'averageAttributes' => $averageAttributes,
+            'calculatedAverageAttributes' => $calculatedAverageAttributes,
+            'totalCalculatedAverageAttributes' => $totalCalculatedAverageAttributes,
             'serviceUnitIndex' => $serviceUnitIndex
         ]);
     }
